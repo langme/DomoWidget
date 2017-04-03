@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearListBox"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/list_box_name"
+                    android:id="@+id/textListBoxName"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/textView"
+                    android:layout_below="@+id/textListBoxName"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/spinner"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:padding="3dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/linearBox">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/box_name"
+                    android:id="@+id/textBoxName"
+                    android:layout_alignParentStart="true"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    android:layout_below="@+id/spinner"
+                    android:layout_marginTop="5dp" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/editBoxName"
+                    android:layout_below="@+id/textBoxName"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="#ffffff"
+                    android:hint="Box - Domo Widget"
+                    android:paddingLeft="5dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/box_url_ext"
+                    android:id="@+id/textViewUrlExt"
+                    android:layout_below="@+id/editBoxName"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editUrlExt"
+                    android:textSize="15dp"
+                    android:textIsSelectable="false"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/textViewUrlExt"
+                    android:layout_alignParentStart="true"
+                    android:background="#ffffff"
+                    android:paddingLeft="5dp"
+                    android:hint="http://domo-widget.com:80"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/box_url_int"
+                    android:id="@+id/textViewUrlInt"
+                    android:layout_below="@+id/editUrlExt"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editUrlInt"
+                    android:textSize="15dp"
+                    android:textIsSelectable="false"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/textViewUrlInt"
+                    android:layout_alignParentStart="true"
+                    android:background="#ffffff"
+                    android:paddingLeft="5dp"
+                    android:hint="localhost"
+                    android:layout_alignParentEnd="true" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_key"
+                    android:id="@+id/textViewClef"
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    android:layout_below="@+id/editUrlInt"
+                    android:layout_alignParentStart="true" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editKey"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="#ffffff"
+                    android:paddingLeft="5dp"
+                    android:hint="MoF7D4Fi6Ya0ThLIjKaljf59e30RK4S7RWHMOnVsGE3WU57e"
+                    android:layout_below="@+id/textViewClef"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="100dp" />
+                </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>

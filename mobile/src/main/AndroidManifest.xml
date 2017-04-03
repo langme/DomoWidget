@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="illimiteremi.domowidget">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/domo_widget"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".DomoGeneralSetting.ManageActivity"
+            android:label="@string/app_name"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DomoUtils.FileExplorerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".DomoWidgetVocal.VocalActivity"
+            android:theme="@style/Theme.Transparent" />
+
+        <receiver
+            android:name=".DomoWidgetToogle.WidgetToogleProvider"
+            android:label="Widget Action">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/domo_widget_toggle_info" />
+        </receiver>
+        <receiver
+            android:name=".DomoWidgetState.WidgetStateProvider"
+            android:label="Widget Info">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/domo_widget_state_info" />
+        </receiver>
+        <receiver
+            android:name=".DomoWidgetPush.WidgetPushProvider"
+            android:label="Widget Push">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/domo_widget_push_info" />
+        </receiver>
+        <receiver
+            android:name=".DomoWidgetLocation.WidgetLocationProvider"
+            android:label="Widget GPS">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/domo_widget_location_info" />
+        </receiver>
+        <receiver
+            android:name=".DomoWidgetMulti.MultiWidgetProvider"
+            android:label="Widget Mutli">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/domo_widget_mutli_info" />
+        </receiver>
+        <receiver
+            android:name=".DomoWidgetVocal.WidgetVocalProvider"
+            android:label="Widget Vocal">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/domo_widget_vocal_info" />
+        </receiver>
+
+        <service
+            android:name=".DomoWidgetMulti.MultiWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".DomoReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.appwidget.action.LOCATION_WIDGET_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".DomoService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!-- Android Wear Service -->
+        <service android:name=".DomoWear.DomoServiceWear" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
+
+
+
+    </application>
+
+</manifest>
