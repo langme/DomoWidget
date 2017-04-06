@@ -27,6 +27,7 @@ public class DomoBaseSQLite extends SQLiteOpenHelper {
     public DomoBaseSQLite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         this.context = context;
+        // Log.d(TAG, "Version de la BDD : " + version);
     }
 
     @Override
@@ -49,7 +50,6 @@ public class DomoBaseSQLite extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         Log.d(TAG, "Version de la base : " + oldVersion + "/" + newVersion);
-
 
         if (newVersion >=14) {
             Log.d(TAG, "Mise à jour version 14");
@@ -172,6 +172,18 @@ public class DomoBaseSQLite extends SQLiteOpenHelper {
             Log.d(TAG, "Mise à jour version 22");
             try {
                 sqLiteDatabase.execSQL(UtilsDomoWidget.CREATE_WEAR_BDD);
+            } catch (SQLiteException e) {
+                Log.e(TAG, "SQLite erreur " + e);
+            }
+        }
+
+        if (newVersion >=23) {
+            Log.d(TAG, "Mise à jour version 23");
+            try {
+                sqLiteDatabase.execSQL("ALTER TABLE " + UtilsDomoWidget.TABLE_DOMO_WEAR
+                        + " ADD COLUMN " + UtilsDomoWidget.COL_SHAKE_TIME_OUT + " INTEGER DEFAULT 5");
+                sqLiteDatabase.execSQL("ALTER TABLE " + UtilsDomoWidget.TABLE_DOMO_WEAR
+                        + " ADD COLUMN " + UtilsDomoWidget.COL_SHAKE_LEVEL + " INTEGER DEFAULT 5");
             } catch (SQLiteException e) {
                 Log.e(TAG, "SQLite erreur " + e);
             }

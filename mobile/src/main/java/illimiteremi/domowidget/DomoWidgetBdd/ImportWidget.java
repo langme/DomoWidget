@@ -203,7 +203,7 @@ public class ImportWidget {
                 stateWidget.setDomoState(explrObject.getString(COL_ETAT));
                 stateWidget.setDomoUnit(explrObject.getString(COL_UNIT));
                 stateWidget.setDomoColor(explrObject.getString(COL_COLOR));
-                if (DomoUtils.getObjetById(context,stateWidget) == null) {
+                if (DomoUtils.getObjetById(context, stateWidget) == null) {
                     DomoUtils.insertObjet(context, stateWidget);
                 }
                 Log.d(TAG, explrObject.toString());

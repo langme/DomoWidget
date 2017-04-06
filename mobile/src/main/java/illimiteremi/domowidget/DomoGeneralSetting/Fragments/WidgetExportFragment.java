@@ -371,7 +371,6 @@ public class WidgetExportFragment extends Fragment {
             JSONObject json    = new JSONObject();
             JSONArray ressList = new JSONArray();
             try {
-                json.put(COL_ID_BOX, widget.getDomoId());
                 json.put(COL_ID_WIDGET, widget.getDomoId());
                 json.put(COL_NAME, widget.getDomoName());
                 json.put(COL_ID_BOX, widget.getDomoBox());
@@ -423,9 +422,9 @@ public class WidgetExportFragment extends Fragment {
             LocationWidget widget = (LocationWidget) obj;
             JSONObject json = new JSONObject();
             try {
-                json.put(COL_ID_BOX, widget.getDomoId());
+                json.put(COL_ID_BOX, widget.getDomoBox());
                 json.put(COL_NAME, widget.getDomoName());
-                json.put(COL_ID_BOX, widget.getDomoId());
+                json.put(COL_ID_WIDGET, widget.getDomoId());
                 json.put(COL_ACTION, widget.getDomoAction());
                 json.put(COL_TIME_OUT, widget.getDomoTimeOut());
                 json.put(COL_DISTANCE, widget.getDomoDistance());

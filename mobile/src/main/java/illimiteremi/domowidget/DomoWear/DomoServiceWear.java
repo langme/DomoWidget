@@ -13,6 +13,9 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -22,16 +25,21 @@ import illimiteremi.domowidget.DomoUtils.DomoUtils;
 import illimiteremi.domowidget.DomoWidgetVocal.VocalWidget;
 
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.INTERCATION;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.JSON_ASK_TYPE;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.JSON_MESSAGE;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.SETTING;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.WEAR;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.WEAR_INTERACTION;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.WEAR_SETTING;
 
 
 public class DomoServiceWear extends WearableListenerService {
 
     private static final String     TAG      = "[DOMO_WEAR]";
-    private Context                 contex;
-    protected GoogleApiClient       mApiClient;
-    private WearSetting             wearSetting;      // Confifguration de l'env Wear
-    private BoxSetting              boxSetting;       // Objet Box
+    private Context                 context;
+    protected GoogleApiClient       mApiClient;       // API Google
+    private WearSetting             wearSetting;      // Confifguration Wear
+    private BoxSetting              boxSetting;       // Confifguration Box
 
     public DomoServiceWear() {
         Log.d(TAG, "DomoServiceWear");
@@ -40,20 +48,21 @@ public class DomoServiceWear extends WearableListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.contex = getApplicationContext();
-        Log.d(TAG, "onCreate()");
+        this.context = getApplicationContext();
 
+        // Connection à l'API GOOGLE
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
         mApiClient.connect();
 
-        ArrayList<Object> wearObjects = DomoUtils.getAllObjet(contex, WEAR);
+        // Recuperation des informations de la configuration WEAR
+        ArrayList<Object> wearObjects = DomoUtils.getAllObjet(context, WEAR);
         if (wearObjects.size() != 0) {
             wearSetting = (WearSetting) wearObjects.get(0);
             boxSetting = new BoxSetting();
             boxSetting.setBoxId(wearSetting.getBoxId());
-            boxSetting = (BoxSetting) DomoUtils.getObjetById(contex, boxSetting);
+            boxSetting = (BoxSetting) DomoUtils.getObjetById(context, boxSetting);
             Log.d(TAG, "Box associée à Wear " + boxSetting.getBoxName());
         } else {
             Log.e(TAG, "Pas de configuration Android wear !");
@@ -72,20 +81,51 @@ public class DomoServiceWear extends WearableListenerService {
 
         // Ouvre une connexion vers la montre
         ConnectionResult connectionResult = mApiClient.blockingConnect(30, TimeUnit.SECONDS);
-
         if (!connectionResult.isSuccess()) {
             Log.e(TAG, "Failed to connect to GoogleApiClient.");
             return;
         }
         // Traitement du message reçu
         final String askMsg = messageEvent.getPath();
-        Log.d(TAG, "Message wear : " + askMsg);
-        if (boxSetting != null) {
-            final String answerMsg = DomoHttp.httpRequest(contex, boxSetting, INTERCATION + askMsg, null, null);
-            Log.d(TAG, "Reponse wear : " + answerMsg);
-            sendMessage(answerMsg);
-        }
+        Log.d(TAG, "Question wear : " + askMsg);
 
+        try {
+            JSONObject jsnObject = new JSONObject(askMsg);
+            String asktype       = jsnObject.getString(JSON_ASK_TYPE);
+            String message       = jsnObject.getString(JSON_MESSAGE);
+            String answerMsg     = "";
+
+            // Selon le type de question
+            switch (asktype) {
+                case SETTING:
+                    // Cas configuration android wear
+                    if (message == WEAR_SETTING) {
+                        ArrayList<Object> wearObjects = DomoUtils.getAllObjet(context, WEAR);
+                        if (wearObjects.size() != 0) {
+                            wearSetting = (WearSetting) wearObjects.get(0);
+                        } else {
+                            wearSetting = null;
+                        }
+                    }
+                    answerMsg = wearSetting.toJson().toString();
+                    break;
+                case WEAR_INTERACTION:
+                    answerMsg = DomoHttp.httpRequest(context, boxSetting, INTERCATION + message, null, null);
+                    break;
+                default:
+                    break;
+            }
+            // Création de la réponse en json
+            jsnObject = new JSONObject();
+            jsnObject.put(JSON_ASK_TYPE,asktype);
+            jsnObject.put(JSON_MESSAGE, answerMsg);
+            Log.d(TAG, "Reponse wear : " + jsnObject.toString());
+            if (boxSetting != null) {
+                sendMessage(jsnObject.toString());
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Erreur : " + e);
+        }
     }
 
     /**
@@ -111,6 +151,5 @@ public class DomoServiceWear extends WearableListenerService {
         super.onDataChanged(dataEventBuffer);
         Log.d(TAG, "onDataChanged: " + dataEventBuffer);
     }
-
 
 }

@@ -257,7 +257,7 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
 
         for (String permission : permissionsNeeded) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 // Permission deja refusé par l'utilisateur
                 ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[permissionsNeeded.size()]), PERMISSION_OK);
             }

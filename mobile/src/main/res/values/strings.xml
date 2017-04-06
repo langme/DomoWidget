@@ -81,6 +81,8 @@
 
     <string name="wear_box">Box associée à votre montre</string>
     <string name="wear_time_out">Attente avant interaction (s)</string>
+    <string name="shake_time_out">Attente entre deux shakes (s)</string>
+    <string name="shake_level">Sensibilité du shake</string>
     <string name="wear_title">Montre connectée</string>
     <string name="wear_node">Aucune</string>
 

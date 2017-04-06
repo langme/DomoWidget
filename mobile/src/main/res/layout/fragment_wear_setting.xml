@@ -98,6 +98,53 @@
                     android:digits="0123456789"
                     android:layout_below="@+id/textTimeOut"/>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/textShakeTimeOut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/editTimeOut"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/shake_time_out"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editShakeTimeOut"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="#ffffff"
+                    android:hint="2"
+                    android:paddingLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:digits="0123456789"
+                    android:layout_below="@+id/textTimeOut"/>
+
+                <TextView
+                    android:id="@+id/textShakeLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/editShakeTimeOut"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/shake_level"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <SeekBar
+                    android:id="@+id/shakeSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:max="10"
+                    android:progress="1" />
+
+
+            </LinearLayout>
     </FrameLayout>
 </ScrollView>

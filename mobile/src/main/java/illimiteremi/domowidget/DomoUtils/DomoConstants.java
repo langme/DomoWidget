@@ -14,7 +14,6 @@ public class DomoConstants {
     public static final int    LOCK_TIME             = 5 * 1000;
     public static final String DEFAULT_COLOR         = "0";
     public static final int    DEFAULT_TIMEOUT       = 2;
-    public static final int    DEFAULT_WEAR_TIMEOUT  = 0;
     public static final String JEEDOM_URL            = "/core/api/jeeApi.php?apikey=";
     public static final String COMMANDE              = "type=cmd&id=";
     public static final String GEOLOC                = "type=geoloc&id=";
@@ -124,5 +123,15 @@ public class DomoConstants {
 
     // ALL
     public static final String  INTENT_NO_DATA          = "android.appwidget.action.APPWIDGET_NODATA";
+
+    // WEAR
+    public static final String  SETTING                 = "SETTING";
+    public static final String  WEAR_SETTING            = "WEAR_SETTING";
+    public static final String  WEAR_INTERACTION        = "INTERACTION";
+    public static final String  JSON_ASK_TYPE           = "ASK_TYPE";
+    public static final String  JSON_MESSAGE            = "MESSAGE";
+    public static final int     DEFAULT_WEAR_TIMEOUT    = 3;
+    public static final int     DEFAULT_SHAKE_TIMEOUT   = 5;
+    public static final int     DEFAULT_SHAKE_LEVEL     = 5;
 
 }

@@ -5,7 +5,7 @@ package illimiteremi.domowidget.DomoWidgetBdd;
  */
 public class UtilsDomoWidget {
 
-    public static final int    VERSION_BDD                 = 22;
+    public static final int    VERSION_BDD                 = 23;
     public static final String NOM_BDD                     = "domo_widget.db";
     public static final String TABLE_DOMO_WIDGET           = "table_toogle_widget";
     public static final String TABLE_STATE_WIDGET          = "table_state_widget";
@@ -52,6 +52,10 @@ public class UtilsDomoWidget {
     public static final String COL_URL_EXTERNE              = "URL_EXTERNE";
 
     public static final String COL_SYNTHESE_VOCAL           = "SYNTHESE_VOCAL";
+
+    public static final String COL_SHAKE_TIME_OUT           = "SHAKE_TIME_OUT";
+    public static final String COL_SHAKE_LEVEL              = "SHAKE_LEVEL";
+
 
     public static final String CREATE_LOCATION_BDD = "CREATE TABLE IF NOT EXISTS " + TABLE_LOCATION_WIDGET + " ("
             + COL_ID             + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -149,5 +153,7 @@ public class UtilsDomoWidget {
     public static final String CREATE_WEAR_BDD = "CREATE TABLE IF NOT EXISTS " + TABLE_DOMO_WEAR + " ("
             + COL_ID             + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COL_ID_BOX         + " INTEGER, "
-            + COL_TIME_OUT       + " INTEGER DEFAULT 5);";
+            + COL_TIME_OUT       + " INTEGER DEFAULT 5, "
+            + COL_SHAKE_TIME_OUT + " INTEGER DEFAULT 5, "
+            + COL_SHAKE_LEVEL    + " INTEGER DEFAULT 5);";
 }

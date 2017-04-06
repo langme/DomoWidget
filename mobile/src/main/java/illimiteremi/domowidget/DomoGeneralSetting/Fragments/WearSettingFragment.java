@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,8 +46,11 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
     private Context               context;
     private Spinner               spinnerBox;       // Spinner de la liste des box
     private AutoCompleteTextView  timeOut;          // TimeOut avant exécution action
+    private AutoCompleteTextView  shakeTimeOut;     // TimeOut avant deux shake
+    private SeekBar               shakeSeekBar;     // Niveau du shake
     private WearSetting           wearSetting;      // Confifguration de l'env Wear
     private TextView              textNode;         // Nom de la montre connectée
+
 
     private BoxAdapter            boxAdapter;       // Adapter de la liste des box
     private BoxSetting            boxSetting;       // Objet Box
@@ -77,6 +81,8 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
 
         spinnerBox    = (Spinner) view.findViewById(R.id.spinner);
         timeOut       = (AutoCompleteTextView) view.findViewById(R.id.editTimeOut);
+        shakeTimeOut  = (AutoCompleteTextView) view.findViewById(R.id.editShakeTimeOut);
+        shakeSeekBar  = (SeekBar) view.findViewById(R.id.shakeSeekBar);
         textNode      = (TextView) view.findViewById(R.id.textNode);
         textNode.setFocusable(false);
 
@@ -85,6 +91,9 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
 
         // Affichage des valeurs enregistrée
         timeOut.setText(String.format(Locale.getDefault(), "%d", wearSetting.getWearTimeOutTimeOut()));
+        shakeTimeOut.setText(String.format(Locale.getDefault(), "%d", wearSetting.getShakeTimeOut()));
+        shakeSeekBar.setProgress(wearSetting.getShakeLevel());
+
         BoxSetting selectedBox = new BoxSetting();
         selectedBox.setBoxId(wearSetting.getBoxId());
         int spinnerPostion = DomoUtils.getSpinnerPosition(context, selectedBox);
@@ -101,6 +110,23 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        shakeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int shakeLevel, boolean b) {
+                wearSetting.setShakeLevel(shakeLevel);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
@@ -130,7 +156,7 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
         hideKeyboard(getActivity());
         switch (item.getItemId()) {
             case R.id.save_action:
-                Log.d(TAG, "Mise à jour de la box = " + backupBoxData());
+                Log.d(TAG, "Mise à jour de la configuration wear = " + backupBoxData());
                 break;
             case R.id.delete_action:
                 break;
@@ -188,12 +214,16 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
     }
 
     /**
-     * Mise à jour de la box dans la bdd
+     * Mise à jour de la configuration wear
      */
     private boolean backupBoxData() {
 
         String timeout = timeOut.getText().toString();
         wearSetting.setWearTimeOutTimeOut(timeout.isEmpty() ? DEFAULT_WEAR_TIMEOUT : Integer.parseInt(timeout));
+
+        String shaketimeout = shakeTimeOut.getText().toString();
+        wearSetting.setShakeTimeOut(shaketimeout.isEmpty() ? DEFAULT_WEAR_TIMEOUT : Integer.parseInt(shaketimeout));
+
         int updateResult = DomoUtils.updateObjet(context, wearSetting);
         if (updateResult == -1) {
             return false;
