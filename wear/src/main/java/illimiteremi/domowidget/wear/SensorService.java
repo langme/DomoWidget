@@ -33,53 +33,19 @@ public class SensorService extends Service implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor        mAccelerometer;
-
     private long          lastUpdate;
     private Integer       shakeLevel   = 5;
     private Integer       shakeTimeOut = 5;
-    private WearGoogleApi wearGoogleApi;
-
     private Vibrator      vibrator;
 
-    private final WearGoogleApi.OnGoogleApiMessageReceived meesageReceiveListener = new WearGoogleApi.OnGoogleApiMessageReceived() {
-        @Override
-        public void onMessageReceive(String messageType, String message) {
-            Log.d(TAG, "Message : " + messageType + " - " + message);
-            switch (messageType) {
-                case IS_CONNECTED:
-                    if (message == "TRUE") {
-                        wearGoogleApi.sendMessage(SETTING, WEAR_SETTING);
-                    }
-                    break;
-                case SETTING:
-                    if (message == WEAR_SETTING) {
-                        try {
-                            JSONObject jsnObject = new JSONObject(message);
-                            shakeTimeOut = Integer.parseInt(jsnObject.getString(COL_SHAKE_TIME_OUT));
-                            shakeLevel = Integer.parseInt(jsnObject.getString(COL_SHAKE_LEVEL));
-                            wearGoogleApi.disconnect();
-                        } catch (Exception e) {
-                            Log.e(TAG, "Erreur : " + e);
-                        }
-                    }
-                    break;
-                default:
-                // NOTHING
-            }
-        }
-    };
 
     @Override
     public void onCreate() {
         Log.d(TAG, "Démarrage du service SensorService...");
-
-        wearGoogleApi = new WearGoogleApi(getApplicationContext());
-        wearGoogleApi.setOnMessageReceivedListener(meesageReceiveListener);
-
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-
+        // TO DO GET SHARE PREF
         super.onCreate();
     }
 

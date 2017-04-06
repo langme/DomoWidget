@@ -57,6 +57,8 @@ public class WearActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.context = getApplicationContext();
         setContentView(R.layout.activity_main);
+
+        // TO GET SHARE PREFERENCE
         cancelMessage = false;
 
         // DelayedConfirmationView
