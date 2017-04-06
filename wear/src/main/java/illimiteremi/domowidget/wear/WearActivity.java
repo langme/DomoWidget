@@ -25,6 +25,7 @@ public class WearActivity extends Activity {
     private WearGoogleApi           wearGoogleApi;
     private DelayedConfirmationView mDelayedConfirmationView;
     private String                  recognizedText;
+    private Boolean                 cancelMessage;
 
     private final WearGoogleApi.OnGoogleApiMessageReceived meesageReceiveListener = new WearGoogleApi.OnGoogleApiMessageReceived() {
         @Override
@@ -32,6 +33,7 @@ public class WearActivity extends Activity {
             Log.d(TAG, "Message : " + messageType + " - " + message);
             if (messageType.contains(WEAR_INTERACTION)) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
     };
@@ -41,7 +43,7 @@ public class WearActivity extends Activity {
         if (requestCode == SPEECH_RECOGNIZER_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                String recognizedText = results.get(0);
+                recognizedText = results.get(0);
                 Log.d(TAG, "Message : " + recognizedText);
                 mDelayedConfirmationView.setVisibility(View.VISIBLE);
                 mDelayedConfirmationView.start();
@@ -53,9 +55,9 @@ public class WearActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Log.d(TAG,"onCreate");
         this.context = getApplicationContext();
         setContentView(R.layout.activity_main);
+        cancelMessage = false;
 
         // DelayedConfirmationView
         mDelayedConfirmationView = (DelayedConfirmationView) findViewById(R.id.delayed_confirmation);
@@ -65,12 +67,19 @@ public class WearActivity extends Activity {
                 new DelayedConfirmationView.DelayedConfirmationListener() {
                     @Override
                     public void onTimerFinished(View view) {
-                        wearGoogleApi.sendMessage(WEAR_INTERACTION, recognizedText);
+                        Log.d(TAG,"onTimerFinished()");
+                        if (cancelMessage) {
+                            cancelMessage = false;
+                        } else {
+                            wearGoogleApi.sendMessage(WEAR_INTERACTION, recognizedText);
+                        }
                     }
 
                     @Override
                     public void onTimerSelected(View view) {
-                        return;
+                        Log.d(TAG,"onTimerSelected()");
+                        cancelMessage = true;
+                        finish();
                     }
                 });
 

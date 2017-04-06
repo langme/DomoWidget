@@ -57,6 +57,7 @@ public class SensorService extends Service implements SensorEventListener {
                             JSONObject jsnObject = new JSONObject(message);
                             shakeTimeOut = Integer.parseInt(jsnObject.getString(COL_SHAKE_TIME_OUT));
                             shakeLevel = Integer.parseInt(jsnObject.getString(COL_SHAKE_LEVEL));
+                            wearGoogleApi.disconnect();
                         } catch (Exception e) {
                             Log.e(TAG, "Erreur : " + e);
                         }
