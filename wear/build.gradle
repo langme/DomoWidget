@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-
 android {
+
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
@@ -13,12 +13,28 @@ android {
         versionName rootProject.ext.versionName
     }
 
+    signingConfigs {
+        GOOGLE_PLAY_KEY {
+            keyAlias 'myandroidkey'
+            keyPassword 'qet3ajxy'
+            storeFile file('../android_key.jks')
+            storePassword 'qet3ajxy'
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.GOOGLE_PLAY_KEY
         }
-
         debug {
             debuggable true
         }
@@ -27,11 +43,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.support:wearable:2.0.1'
     compile 'com.google.android.gms:play-services-wearable:10.2.1'
     provided 'com.google.android.wearable:wearable:2.0.1'
 }
 
 
-// adb -s 411KPAE0095936 uninstall illimiteremi.domowidget
+// adb -s localhost:4444 uninstall illimiteremi.domowidget
