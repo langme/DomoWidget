@@ -124,7 +124,7 @@ public class ImportWidget {
 
                 if (exisingBox == null) {
                     DomoUtils.insertObjet(context, boxSetting);
-                    Log.d(TAG, explrObject.toString());
+                    Log.d(TAG, BOX + " - " + explrObject.toString());
                 }
             }
         } catch (JSONException e) {
@@ -155,7 +155,7 @@ public class ImportWidget {
                 if (DomoUtils.getObjetById(context,toogleWidget) == null) {
                     DomoUtils.insertObjet(context, toogleWidget);
                 }
-                Log.d(TAG, explrObject.toString());
+                Log.d(TAG, TOOGLE + " - " + explrObject.toString());
             }
         } catch (JSONException e) {
             Log.e(TAG, "Erreur : " + e);
@@ -181,7 +181,7 @@ public class ImportWidget {
                 if (DomoUtils.getObjetById(context,pushWidget) == null) {
                     DomoUtils.insertObjet(context, pushWidget);
                 }
-                Log.d(TAG, explrObject.toString());
+                Log.d(TAG, PUSH + " - " + explrObject.toString());
             }
         } catch (JSONException e) {
             Log.e(TAG, "Erreur : " + e);
@@ -206,7 +206,7 @@ public class ImportWidget {
                 if (DomoUtils.getObjetById(context, stateWidget) == null) {
                     DomoUtils.insertObjet(context, stateWidget);
                 }
-                Log.d(TAG, explrObject.toString());
+                Log.d(TAG, STATE + " - " + explrObject.toString());
             }
         } catch (JSONException e) {
             Log.e(TAG, "Erreur : " + e);
@@ -232,7 +232,7 @@ public class ImportWidget {
                 if (DomoUtils.getObjetById(context,locationWidget) == null) {
                     DomoUtils.insertObjet(context, locationWidget);
                 }
-                Log.d(TAG, explrObject.toString());
+                Log.d(TAG, LOCATION + " - " + explrObject.toString());
             }
         } catch (JSONException e) {
             Log.e(TAG, "Erreur : " + e);
@@ -271,7 +271,7 @@ public class ImportWidget {
                         Log.d(TAG, explrRessObject.toString());
                     }
                 }
-                Log.d(TAG, explrObject.toString());
+                Log.d(TAG, MULTI + " - " + explrObject.toString());
             }
         } catch (JSONException e) {
             Log.e(TAG, "Erreur : " + e);

@@ -85,6 +85,8 @@
     <string name="shake_level">Sensibilité du shake</string>
     <string name="wear_title">Montre connectée</string>
     <string name="wear_node">Aucune</string>
+    <string name="wear_disable">DÉSACTIVE</string>
+
 
     <string name="error_name">Le nom est obligatoire !</string>
     <string name="error_url_ext">Une adresse est obligatoire !</string>

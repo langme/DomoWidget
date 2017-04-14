@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.SeekBar;
@@ -20,13 +19,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import illimiteremi.domowidget.DomoAdapter.BoxAdapter;
 import illimiteremi.domowidget.DomoGeneralSetting.BoxSetting;
@@ -36,12 +42,16 @@ import illimiteremi.domowidget.R;
 
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.BOX;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.DEFAULT_WEAR_TIMEOUT;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.JSON_ASK_TYPE;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.JSON_MESSAGE;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.SETTING_PATH;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.WEAR;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.WEAR_SETTING;
 import static illimiteremi.domowidget.DomoUtils.DomoUtils.hideKeyboard;
 
-public class WearSettingFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks{
+public class WearSettingFragment extends Fragment implements ConnectionCallbacks{
 
-    private static final String   TAG      = "[DOMO_WEAR_FRAGMENT]";
+    private static final String   TAG      = "[DOMO_WEAR_SETTING]";
 
     private Context               context;
     private Spinner               spinnerBox;       // Spinner de la liste des box
@@ -50,12 +60,21 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
     private SeekBar               shakeSeekBar;     // Niveau du shake
     private WearSetting           wearSetting;      // Confifguration de l'env Wear
     private TextView              textNode;         // Nom de la montre connectée
+    private TextView              textShakeLevel;   // Message du shake
 
 
     private BoxAdapter            boxAdapter;       // Adapter de la liste des box
     private BoxSetting            boxSetting;       // Objet Box
 
     private GoogleApiClient       mGoogleApiClient; // Api Google
+    private Node                  connectedNode;    // Noeud de connection
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Disconnect - GoogleApiClient");
+        mGoogleApiClient.disconnect();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,12 +98,20 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
         View view = inflater.inflate(R.layout.fragment_wear_setting, container, false);
         setHasOptionsMenu(true);
 
-        spinnerBox    = (Spinner) view.findViewById(R.id.spinner);
-        timeOut       = (AutoCompleteTextView) view.findViewById(R.id.editTimeOut);
-        shakeTimeOut  = (AutoCompleteTextView) view.findViewById(R.id.editShakeTimeOut);
-        shakeSeekBar  = (SeekBar) view.findViewById(R.id.shakeSeekBar);
-        textNode      = (TextView) view.findViewById(R.id.textNode);
+        spinnerBox     = (Spinner) view.findViewById(R.id.spinner);
+        timeOut        = (AutoCompleteTextView) view.findViewById(R.id.editTimeOut);
+        shakeTimeOut   = (AutoCompleteTextView) view.findViewById(R.id.editShakeTimeOut);
+        shakeSeekBar   = (SeekBar) view.findViewById(R.id.shakeSeekBar);
+        textShakeLevel = (TextView) view.findViewById(R.id.textShakeLevel);
+        textNode       = (TextView) view.findViewById(R.id.textNode);
         textNode.setFocusable(false);
+
+        // Connection à GoogleApiClient
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                            .addApi(Wearable.API)
+                            .addConnectionCallbacks(this)
+                            .build();
+        mGoogleApiClient.connect();
 
         // Chargement des spinners
         loadSpinner();
@@ -92,7 +119,6 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
         // Affichage des valeurs enregistrée
         timeOut.setText(String.format(Locale.getDefault(), "%d", wearSetting.getWearTimeOutTimeOut()));
         shakeTimeOut.setText(String.format(Locale.getDefault(), "%d", wearSetting.getShakeTimeOut()));
-        shakeSeekBar.setProgress(wearSetting.getShakeLevel());
 
         BoxSetting selectedBox = new BoxSetting();
         selectedBox.setBoxId(wearSetting.getBoxId());
@@ -118,6 +144,9 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
             @Override
             public void onProgressChanged(SeekBar seekBar, int shakeLevel, boolean b) {
                 wearSetting.setShakeLevel(shakeLevel);
+                String shakeTxt = context.getResources().getString(R.string.shake_level) ;
+                shakeTxt = shakeLevel == 0 ? shakeTxt + " : " + context.getResources().getString(R.string.wear_disable) : shakeTxt + " : " + shakeLevel + " / 10";
+                textShakeLevel.setText(shakeTxt);
             }
 
             @Override
@@ -131,14 +160,9 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
             }
         });
 
-        textNode.setBackgroundColor(Color.argb(100,255,0,0));
+        shakeSeekBar.setProgress(wearSetting.getShakeLevel());
 
-        // Connection à GoogleApiClient
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .build();
-        mGoogleApiClient.connect();
+        textNode.setBackgroundColor(Color.argb(100,255,0,0));
 
         return view;
     }
@@ -156,7 +180,8 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
         hideKeyboard(getActivity());
         switch (item.getItemId()) {
             case R.id.save_action:
-                Log.d(TAG, "Mise à jour de la configuration wear = " + backupBoxData());
+                //Log.d(TAG, "Mise à jour de la configuration wear = " + backupBoxData());
+                backupBoxData();
                 break;
             case R.id.delete_action:
                 break;
@@ -173,28 +198,33 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final List<Node> connectedNodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes();
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String watchName = connectedNodes.get(0).getDisplayName();
-                            textNode.setText(watchName);
-                            textNode.setBackgroundColor(Color.argb(100,13,151,36));
-                        } catch (Exception e) {
-                            Log.e(TAG, "Erreur : " + e);
+                try {
+                    mGoogleApiClient.blockingConnect();
+                    NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+                    connectedNode = nodes.getNodes().get(0);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String watchName = connectedNode.getDisplayName();
+                                textNode.setText(watchName);
+                                textNode.setBackgroundColor(Color.argb(100,13,151,36));
+                            } catch (Exception e) {
+                                Log.e(TAG, "Erreur : " + e);
+                            }
                         }
-                    }
-                });
-                Log.d(TAG, connectedNodes.toString());
-                mGoogleApiClient.disconnect();
+                    });
+                    Log.d(TAG, "Connected Node = " + connectedNode.getDisplayName());
+                } catch (Exception e) {
+                    Log.e(TAG, "Erreur : " + e);
+                }
             }
         }).start();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+
     }
 
     /**
@@ -218,17 +248,46 @@ public class WearSettingFragment extends Fragment implements GoogleApiClient.Con
      */
     private boolean backupBoxData() {
 
+        // Crtl timeOout
         String timeout = timeOut.getText().toString();
         wearSetting.setWearTimeOutTimeOut(timeout.isEmpty() ? DEFAULT_WEAR_TIMEOUT : Integer.parseInt(timeout));
-
         String shaketimeout = shakeTimeOut.getText().toString();
         wearSetting.setShakeTimeOut(shaketimeout.isEmpty() ? DEFAULT_WEAR_TIMEOUT : Integer.parseInt(shaketimeout));
 
+        // Update BDD
         int updateResult = DomoUtils.updateObjet(context, wearSetting);
+
+        // Update Wear
+        sendSettingToWear(wearSetting);
+
         if (updateResult == -1) {
             return false;
         }
         Toast.makeText(getContext(), getContext().getResources().getString(R.string.save_box), Toast.LENGTH_SHORT).show();
         return true;
+    }
+
+    /**
+     * Envoi de la configuration à la montre
+     * @param wearSetting
+     */
+    private void sendSettingToWear(final WearSetting wearSetting) {
+
+        if (connectedNode != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject jsonSendMessage = new JSONObject();
+                        jsonSendMessage.put(JSON_ASK_TYPE, WEAR_SETTING);
+                        jsonSendMessage.put(JSON_MESSAGE, wearSetting.toJson());
+                        MessageApi.SendMessageResult sendResult = Wearable.MessageApi.sendMessage(mGoogleApiClient, connectedNode.getId(),SETTING_PATH ,jsonSendMessage.toString().getBytes()).await();
+                       Log.d(TAG, "Send Result = " + sendResult.getStatus());
+                    } catch (Exception e){
+                        Log.e(TAG, "Erreur : " + e);
+                    }
+                }
+            }).start();
+        }
     }
 }

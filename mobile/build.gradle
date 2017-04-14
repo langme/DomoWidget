@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
     defaultConfig {
         applicationId rootProject.ext.applicationId
         minSdkVersion 19
@@ -12,21 +12,33 @@ android {
         versionName rootProject.ext.versionName
     }
 
+    signingConfigs {
+        GOOGLE_PLAY_KEY {
+            keyAlias 'myandroidkey'
+            keyPassword 'qet3ajxy'
+            storeFile file('../android_key.jks')
+            storePassword 'qet3ajxy'
+        }
+    }
+
     lintOptions {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
         abortOnError false
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.GOOGLE_PLAY_KEY
         }
         debug {
             debuggable true
         }
     }
+
 }
 
 dependencies {

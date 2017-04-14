@@ -24,6 +24,7 @@ import illimiteremi.domowidget.DomoUtils.DomoHttp;
 import illimiteremi.domowidget.DomoUtils.DomoUtils;
 import illimiteremi.domowidget.DomoWidgetVocal.VocalWidget;
 
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.INTERACTION_PATH;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.INTERCATION;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.JSON_ASK_TYPE;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.JSON_MESSAGE;
@@ -35,7 +36,7 @@ import static illimiteremi.domowidget.DomoUtils.DomoConstants.WEAR_SETTING;
 
 public class DomoServiceWear extends WearableListenerService {
 
-    private static final String     TAG      = "[DOMO_WEAR]";
+    private static final String     TAG      = "[DOMO_WEAR_SERVICE]";
     private Context                 context;
     protected GoogleApiClient       mApiClient;       // API Google
     private WearSetting             wearSetting;      // Confifguration Wear
@@ -80,51 +81,55 @@ public class DomoServiceWear extends WearableListenerService {
         super.onMessageReceived(messageEvent);
 
         // Ouvre une connexion vers la montre
-        ConnectionResult connectionResult = mApiClient.blockingConnect(30, TimeUnit.SECONDS);
+        ConnectionResult connectionResult = mApiClient.blockingConnect(5, TimeUnit.SECONDS);
         if (!connectionResult.isSuccess()) {
             Log.e(TAG, "Failed to connect to GoogleApiClient.");
             return;
         }
         // Traitement du message reçu
-        final String askMsg = messageEvent.getPath();
-        Log.d(TAG, "Question wear : " + askMsg);
+        final String askMsg   = new String(messageEvent.getData());
+        final String wearPath = messageEvent.getPath();
+        Log.d(TAG, "Question wear : " + wearPath + " / " + askMsg);
 
-        try {
-            JSONObject jsnObject = new JSONObject(askMsg);
-            String asktype       = jsnObject.getString(JSON_ASK_TYPE);
-            String message       = jsnObject.getString(JSON_MESSAGE);
-            String answerMsg     = "";
+        // Demande d'interaction Jeedom
+        if (wearPath.contentEquals(INTERACTION_PATH)) {
+            try {
+                JSONObject jsnObject = new JSONObject(askMsg);
+                String asktype       = jsnObject.getString(JSON_ASK_TYPE);
+                String message       = jsnObject.getString(JSON_MESSAGE);
+                String answerMsg     = "";
 
-            // Selon le type de question
-            switch (asktype) {
-                case SETTING:
-                    // Cas configuration android wear
-                    if (message == WEAR_SETTING) {
-                        ArrayList<Object> wearObjects = DomoUtils.getAllObjet(context, WEAR);
-                        if (wearObjects.size() != 0) {
-                            wearSetting = (WearSetting) wearObjects.get(0);
-                        } else {
-                            wearSetting = null;
+                // Selon le type de question
+                switch (asktype) {
+                    case SETTING:
+                        // Cas configuration android wear
+                        if (message == WEAR_SETTING) {
+                            ArrayList<Object> wearObjects = DomoUtils.getAllObjet(context, WEAR);
+                            if (wearObjects.size() != 0) {
+                                wearSetting = (WearSetting) wearObjects.get(0);
+                            } else {
+                                wearSetting = null;
+                            }
                         }
-                    }
-                    answerMsg = wearSetting.toJson().toString();
-                    break;
-                case WEAR_INTERACTION:
-                    answerMsg = DomoHttp.httpRequest(context, boxSetting, INTERCATION + message, null, null);
-                    break;
-                default:
-                    break;
+                        answerMsg = wearSetting.toJson().toString();
+                        break;
+                    case WEAR_INTERACTION:
+                        answerMsg = DomoHttp.httpRequest(context, boxSetting, INTERCATION + message, null, null);
+                        break;
+                    default:
+                        break;
+                }
+                // Création de la réponse en json
+                jsnObject = new JSONObject();
+                jsnObject.put(JSON_ASK_TYPE, asktype);
+                jsnObject.put(JSON_MESSAGE, answerMsg);
+                Log.d(TAG, "Reponse wear : " + jsnObject.toString());
+                if (boxSetting != null) {
+                    sendMessage(jsnObject.toString());
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Erreur : " + e);
             }
-            // Création de la réponse en json
-            jsnObject = new JSONObject();
-            jsnObject.put(JSON_ASK_TYPE,asktype);
-            jsnObject.put(JSON_MESSAGE, answerMsg);
-            Log.d(TAG, "Reponse wear : " + jsnObject.toString());
-            if (boxSetting != null) {
-                sendMessage(jsnObject.toString());
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Erreur : " + e);
         }
     }
 
@@ -140,16 +145,12 @@ public class DomoServiceWear extends WearableListenerService {
                 // Envoie le message à tous les noeuds/montres connectées
                 final NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mApiClient).await();
                 for (Node node : nodes.getNodes()) {
-                    Wearable.MessageApi.sendMessage(mApiClient, node.getId(), message, null).await();
+                    Wearable.MessageApi.sendMessage(mApiClient, node.getId(), INTERACTION_PATH, message.getBytes()).await();
+                    mApiClient.disconnect();
                 }
             }
         }).start();
     }
 
-    @Override
-    public void onDataChanged(DataEventBuffer dataEventBuffer) {
-        super.onDataChanged(dataEventBuffer);
-        Log.d(TAG, "onDataChanged: " + dataEventBuffer);
-    }
 
 }

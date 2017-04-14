@@ -182,8 +182,8 @@ public class FileExplorerActivity extends ListActivity {
                                                         importWidget.importToogleWidget(fileContent);
                                                         importWidget.importPushWidget(fileContent);
                                                         importWidget.importStateWidget(fileContent);
-                                                        importWidget.importLocationWidget(fileContent);
                                                         importWidget.importMultiWidget(fileContent);
+                                                        importWidget.importLocationWidget(fileContent);
                                                         Toast.makeText(context, context.getResources().getString(R.string.import_ok), Toast.LENGTH_SHORT).show();
                                                         finish();
                                                     }

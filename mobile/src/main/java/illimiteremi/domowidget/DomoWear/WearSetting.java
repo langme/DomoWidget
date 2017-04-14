@@ -21,7 +21,6 @@ public class WearSetting {
     private Integer id;                   // Identifiant SQL
     private Integer boxId;                // Identifiant de la box
     private Integer wearTimeOut;          // TimeOut avant envoi
-
     private Integer shakeTimeOut;         // TimeOut avant envoi
     private Integer shakeLevel;           // TimeOut avant envoi
 

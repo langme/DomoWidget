@@ -21,16 +21,16 @@ public class DomoConstants {
     public static final String ACTION                = "&action=";
     public static final String INTERCATION           = "&type=interact&query=%";
 
-    public static final String TOOGLE     = "ToogleWidget";
-    public static final String STATE      = "StateWidget";
-    public static final String PUSH       = "PushWidget";
-    public static final String LOCATION   = "LocationWidget";
-    public static final String MULTI      = "MultiWidget";
-    public static final String VOCAL      = "VocalWidget";
-    public static final String WEAR       = "WearSetting";
-    public static final String BOX        = "BoxSetting";
-    public static final String MULTI_RESS = "MultiWidgetRess";
-    public static final String ICON       = "IconSetting";
+    public static final String TOOGLE      = "ToogleWidget";
+    public static final String STATE       = "StateWidget";
+    public static final String PUSH        = "PushWidget";
+    public static final String LOCATION    = "LocationWidget";
+    public static final String MULTI       = "MultiWidget";
+    public static final String VOCAL       = "VocalWidget";
+    public static final String WEAR        = "WearSetting";
+    public static final String BOX         = "BoxSetting";
+    public static final String MULTI_RESS  = "MultiWidgetRess";
+    public static final String ICON        = "IconSetting";
 
     public static final String ERROR             = "ERROR";
     public static final String OK                = "OK";
@@ -126,12 +126,14 @@ public class DomoConstants {
 
     // WEAR
     public static final String  SETTING                 = "SETTING";
+    public static final String  INTERACTION_PATH        = "/interaction";
+    public static final String  SETTING_PATH            = "/setting";
     public static final String  WEAR_SETTING            = "WEAR_SETTING";
     public static final String  WEAR_INTERACTION        = "INTERACTION";
     public static final String  JSON_ASK_TYPE           = "ASK_TYPE";
     public static final String  JSON_MESSAGE            = "MESSAGE";
     public static final int     DEFAULT_WEAR_TIMEOUT    = 3;
     public static final int     DEFAULT_SHAKE_TIMEOUT   = 5;
-    public static final int     DEFAULT_SHAKE_LEVEL     = 5;
+    public static final int     DEFAULT_SHAKE_LEVEL     = 0;
 
 }

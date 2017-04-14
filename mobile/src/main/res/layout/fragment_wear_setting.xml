@@ -142,9 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:max="10"
-                    android:progress="1" />
-
-
+                    android:progress="5"/>
             </LinearLayout>
     </FrameLayout>
 </ScrollView>

@@ -105,6 +105,7 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/domo_widget_vocal_info" />
+
         </receiver>
 
         <service
@@ -129,7 +130,8 @@
         <!-- Android Wear Service -->
         <service android:name=".DomoWear.DomoServiceWear" >
             <intent-filter>
-                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" />
             </intent-filter>
         </service>
 
