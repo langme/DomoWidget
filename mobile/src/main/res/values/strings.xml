@@ -106,4 +106,9 @@
     <string name="export_loading">Exportation en cours...</string>
     <string name="bdd_update">Chargerment en cous...</string>
 
+    <string name="paypal">Faire un dont</string>
+    <string name="forum">Forum Jeedom</string>
+    <string name="tutoriel">Tutoriel</string>
+
+
 </resources>

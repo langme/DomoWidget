@@ -59,5 +59,18 @@
         </menu>
     </item>
 
+    <item android:title="Participer">
+        <menu>
+            <item
+                android:id="@+id/paypal"
+                android:icon="@drawable/ic_menu_paypal"
+                android:title="@string/paypal" />
+
+            <item
+                android:id="@+id/forum"
+                android:icon="@drawable/ic_menu_tuto"
+                android:title="@string/tutoriel" />
+        </menu>
+    </item>
 
 </menu>

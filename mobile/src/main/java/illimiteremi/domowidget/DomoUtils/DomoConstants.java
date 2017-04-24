@@ -121,6 +121,11 @@ public class DomoConstants {
     public static final String  UPDATE_ALL_VOCAL_WIDGET = "android.appwidget.action.VOCAL_WIDGET_UPDATE_ALL";
     public static final String  VOCAL_LABEL             = "Widget Vocal";
 
+    // PAYPAL & FORUM
+    public static final String  URL_FORUM               = "https://www.jeedom.com/forum/viewtopic.php?f=25&t=19261";
+    public static final String  URL_PAYPAL              = "https://www.paypal.me/illimiteremi";
+    public static final String  URL_WORDPRESS           = "https://domowidget.wordpress.com";
+
     // ALL
     public static final String  INTENT_NO_DATA          = "android.appwidget.action.APPWIDGET_NODATA";
 

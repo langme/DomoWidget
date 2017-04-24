@@ -20,12 +20,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 import java.util.ArrayList;
 
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.BoxSettingFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.IconSettingFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WearSettingFragment;
+import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WebViewFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetExportFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetLocationFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetMultiFragment;
@@ -44,6 +46,8 @@ import static illimiteremi.domowidget.DomoUtils.DomoConstants.PERMISSION_OK;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.PUSH_LABEL;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.STATE_LABEL;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.TOOGLE_LABEL;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.URL_PAYPAL;
+import static illimiteremi.domowidget.DomoUtils.DomoConstants.URL_WORDPRESS;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.VOCAL_LABEL;
 
 public class ManageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,6 +57,7 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
     private Context               context;
     private DrawerLayout          drawer;
     private ActionBarDrawerToggle toggle;
+    private WebView               paypal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,6 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -174,11 +178,10 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         Fragment myFragment = null;
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        Bundle extras = new Bundle();
 
         // Selection des menus
         switch (id){
@@ -218,11 +221,21 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
                 startActivity(intent);
                 drawer.openDrawer(GravityCompat.START);
                 break;
+            case R.id.paypal:
+                myFragment = new WebViewFragment();
+                extras.putString("URL", URL_PAYPAL);
+                extras.putString("TITLE", getString(R.string.paypal));
+                break;
+            case R.id.forum:
+                myFragment = new WebViewFragment();
+                extras.putString("URL", URL_WORDPRESS);
+                extras.putString("TITLE", getString(R.string.tutoriel));
+                break;
         }
 
         // Affichage du fragment
         if (myFragment != null) {
-            myFragment.setArguments(null);
+            myFragment.setArguments(extras);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_fragment, myFragment).commit();
         }

@@ -107,7 +107,7 @@ public class WidgetPushFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_save_settings, menu);
-        MenuItem saveAction   = menu.findItem(R.id.save_action);
+        MenuItem saveAction = menu.findItem(R.id.save_action);
         deleteAction = menu.findItem(R.id.delete_action);
 
         if (newIdWidget != 0) {

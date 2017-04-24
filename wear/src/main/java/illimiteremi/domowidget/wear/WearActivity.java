@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.wearable.view.DelayedConfirmationView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,10 +43,12 @@ public class WearActivity extends Activity implements GoogleApiClient.Connection
 
     private DelayedConfirmationView mDelayedConfirmationView;   // DelayedConfirmation
     private String                  recognizedText;             // Message
+    private TextView                sendtxt;                    // Envoi en cours
+
+    private ImageButton             interactionButton;
 
     private int                     wearTimeOut;                // Temps avant envois du message
-    private boolean                 isCancel;                   // Annulation
-
+    private boolean                 isCancel = false;           // Annulation
 
     @Override
     protected void onDestroy() {
@@ -67,6 +71,7 @@ public class WearActivity extends Activity implements GoogleApiClient.Connection
                 List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 recognizedText = results.get(0);
                 Log.d(TAG, "Message : " + recognizedText);
+                sendtxt.setText(getString(R.string.interaction_send));
                 mDelayedConfirmationView.setVisibility(View.VISIBLE);
                 mDelayedConfirmationView.start();
             }
@@ -78,7 +83,12 @@ public class WearActivity extends Activity implements GoogleApiClient.Connection
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = getApplicationContext();
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_main);
+
+        // Message envoi en cours...
+        sendtxt = (TextView) findViewById(R.id.sendtxt);
+        sendtxt.setText(getString(R.string.interaction_title));
 
         // Start service
         Intent msgIntent = new Intent(context, SensorService.class);
@@ -98,47 +108,55 @@ public class WearActivity extends Activity implements GoogleApiClient.Connection
         mDelayedConfirmationView = (DelayedConfirmationView) findViewById(R.id.delayed_confirmation);
         mDelayedConfirmationView.setVisibility(View.INVISIBLE);
         mDelayedConfirmationView.setTotalTimeMs(TimeUnit.SECONDS.toMillis(wearTimeOut));
-        isCancel = false;
         mDelayedConfirmationView.setListener(
                 new DelayedConfirmationView.DelayedConfirmationListener() {
                     @Override
                     public void onTimerFinished(View view) {
-                        mDelayedConfirmationView.setVisibility(View.INVISIBLE);
+                        Log.d(TAG, "onTimerFinished : " + isCancel);
                         if (!isCancel) {
                             sendMessage(recognizedText);
                         } else {
-                            finish();
+                            isCancel = false;
                         }
                     }
 
                     @Override
                     public void onTimerSelected(View view) {
-                        mDelayedConfirmationView.setVisibility(View.INVISIBLE);
+                        Log.d(TAG, "onTimerSelected");
                         isCancel = true;
                         finish();
                     }
                 });
 
-        onClickMe(null);
+        interactionButton = (ImageButton) findViewById(R.id.domoButton);
+        interactionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    onClickMe(null);
+            }
+        });
+
+       onClickMe(null);
     }
 
     /**
      * onClickMe
      */
-    public void onClickMe(View view){
+    private void onClickMe(View view){
+        Log.d(TAG, "onClickMe");
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         startActivityForResult(intent, SPEECH_RECOGNIZER_REQUEST_CODE);
     }
 
-    /*
+/*
     private void test() {
         recognizedText = "blblablabla";
         mDelayedConfirmationView.setVisibility(View.VISIBLE);
         mDelayedConfirmationView.start();
+        sendtxt.setText(getString(R.string.interaction_send));
     }
-    */
-
+*/
     /**
      * Envoi de la configuration à la montre
      * @param wearMessage
@@ -160,6 +178,9 @@ public class WearActivity extends Activity implements GoogleApiClient.Connection
                     }
                 }
             }).start();
+        } else {
+            finish();
+            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -201,12 +222,13 @@ public class WearActivity extends Activity implements GoogleApiClient.Connection
 
                 if (type.contains(WEAR_INTERACTION)) {
                     Log.d(TAG, "onMessageReceived => " + messageEvent.getPath());
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     finish();
                 }
             } catch (Exception e) {
                 Log.d(TAG, "Erreur :" + e);
             }
+            mGoogleApiClient.disconnect();
         }
     }
 }

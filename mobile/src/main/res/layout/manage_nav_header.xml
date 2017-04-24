@@ -41,14 +41,15 @@
                 android:textSize="16sp"
                 android:paddingTop="5dp"
                 android:paddingLeft="5dp" />
+
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="248dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="illimiteremi@gmail.com"
                 android:layout_marginTop="5dp"
-                android:textAlignment="viewStart"
-                android:paddingLeft="10dp" />
+                android:paddingLeft="10dp"
+                android:text="illimiteremi@gmail.com"
+                android:textAlignment="viewStart" />
 
         </LinearLayout>
 
