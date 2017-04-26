@@ -20,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.webkit.WebView;
 
 import java.util.ArrayList;
 
@@ -57,7 +56,6 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
     private Context               context;
     private DrawerLayout          drawer;
     private ActionBarDrawerToggle toggle;
-    private WebView               paypal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,13 +259,14 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
      * checkPermission
      */
     private void checkPermission() {
-
         // Vérification des permissions
         ArrayList<String> permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
+
 
         for (String permission : permissionsNeeded) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {

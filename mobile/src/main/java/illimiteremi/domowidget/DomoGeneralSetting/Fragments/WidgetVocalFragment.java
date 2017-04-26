@@ -51,7 +51,8 @@ public class WidgetVocalFragment extends Fragment {
     private Spinner               spinnerBox;               // Spinner liste des box
     private Spinner               spinnerWidgets;           // Spinner de la liste des widgets
     private LinearLayout          linearLayoutWidget;       // Layout de la configuration du widget
-    private CheckBox              checkSyntheseVocal;       // Mise à jour manuel
+    private CheckBox              checkSyntheseVocal;       // Synthese Vocal
+    private AutoCompleteTextView  keyPhrase;                // Mot clef comme Ok Google
 
     private BoxSetting            selectedBox;              // Box domotique utilisé par le widget
     private WidgetAdapter         widgetAdapter;            // Adapter de la liste des widgets
@@ -156,6 +157,7 @@ public class WidgetVocalFragment extends Fragment {
         spinnerWidgets     = (Spinner) view.findViewById(R.id.spinnerWidgets);
         linearLayoutWidget = (LinearLayout) view.findViewById(R.id.linearWidget);
         checkSyntheseVocal = (CheckBox) view.findViewById(R.id.checkSyntheseVocal);
+        keyPhrase          = (AutoCompleteTextView) view.findViewById(R.id.editKeyPhrase);
 
         // Chargement des spinners
         loadSpinner();
@@ -184,6 +186,7 @@ public class WidgetVocalFragment extends Fragment {
                         } else {
                             deleteAction.setVisible(true);
                         }
+                        keyPhrase.setText(widget.getKeyPhrase());
                     } catch (Exception e) {
                         Log.d(TAG, "Erreur " + e);
                     }
@@ -238,7 +241,7 @@ public class WidgetVocalFragment extends Fragment {
         selectedBox = (BoxSetting) spinnerBox.getSelectedItem();
         widget.setDomoBox(selectedBox.getBoxId());
         widget.setDomoSynthese(checkSyntheseVocal.isChecked() ? 1 : 0);
-
+        widget.setKeyPhrase(keyPhrase.getText().toString());
         // Si nouveau widget
         if (newIdWidget != 0) {
             widget.setDomoId(newIdWidget);
@@ -258,12 +261,14 @@ public class WidgetVocalFragment extends Fragment {
             // Message de sauvegarde
             Toast.makeText(getContext(), getContext().getResources().getString(R.string.save_box), Toast.LENGTH_SHORT).show();
         }
+
         // Mise à jour des widgets
         Intent updateIntent = new Intent(context, WidgetVocalProvider.class);
         updateIntent.setAction(UPDATE_ALL_VOCAL_WIDGET);
         updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget.getDomoId());
         updateIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
         context.sendBroadcast(updateIntent);
+        DomoUtils.startService(context, true);
     }
 }
 

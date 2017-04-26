@@ -47,6 +47,7 @@ import illimiteremi.domowidget.DomoWidgetState.StateWidget;
 import illimiteremi.domowidget.DomoWidgetState.WidgetStateProvider;
 import illimiteremi.domowidget.DomoWidgetToogle.ToogleWidget;
 import illimiteremi.domowidget.DomoWidgetToogle.WidgetToogleProvider;
+import illimiteremi.domowidget.DomoWidgetVocal.VocalService;
 import illimiteremi.domowidget.DomoWidgetVocal.VocalWidget;
 import illimiteremi.domowidget.DomoWidgetVocal.WidgetVocalProvider;
 import illimiteremi.domowidget.R;
@@ -111,11 +112,18 @@ public class DomoUtils {
      */
     public static void startService(Context context, boolean restart){
         // Démarrage du service
-        if (!isServiceRunning(context,DomoService.class) || restart) {
+        if (!isServiceRunning(context, DomoService.class) || restart) {
             Intent msgIntent = new Intent(context, DomoService.class);
             context.stopService(msgIntent);
             context.startService(msgIntent);
         }
+
+        if (!isServiceRunning(context, VocalService.class)) {
+            Intent msgIntent = new Intent(context, VocalService.class);
+            context.startService(msgIntent);
+            Log.d("[DOMO_VOICE_SERVICE]", "restart service");
+        }
+
     }
 
     /**

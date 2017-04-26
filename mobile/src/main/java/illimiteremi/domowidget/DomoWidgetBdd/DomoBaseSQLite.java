@@ -188,6 +188,16 @@ public class DomoBaseSQLite extends SQLiteOpenHelper {
                 Log.e(TAG, "SQLite erreur " + e);
             }
         }
+
+        if (newVersion >=24) {
+            Log.d(TAG, "Mise à jour version 24");
+            try {
+                sqLiteDatabase.execSQL("ALTER TABLE " + UtilsDomoWidget.TABLE_VOCAL_WIDGET
+                        + " ADD COLUMN " + UtilsDomoWidget.COL_KEYPHRASE + " TEXT");
+            } catch (SQLiteException e) {
+                Log.e(TAG, "SQLite erreur " + e);
+            }
+        }
     }
 
     /**

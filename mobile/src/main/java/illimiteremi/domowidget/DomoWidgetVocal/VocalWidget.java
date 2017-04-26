@@ -24,6 +24,7 @@ public class VocalWidget {
     private Integer    domoSynthese;                                // Retour synthese vocal
     private BoxSetting selectedBox;                                 // Box selectionnée
     private Boolean    isPresent;                                   // Widget présent sur le home
+    private String     keyPhrase;                                   // Mot clef
 
     public VocalWidget(Context context, Integer domoId) {
         // Log.d(TAG, "Instance de l'objet Widget : " + domoId);
@@ -75,6 +76,14 @@ public class VocalWidget {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getKeyPhrase() {
+        return keyPhrase;
+    }
+
+    public void setKeyPhrase(String keyPhrase) {
+        this.keyPhrase = keyPhrase;
     }
 
     public BoxSetting getSelectedBox() {

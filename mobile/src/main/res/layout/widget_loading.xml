@@ -21,8 +21,6 @@
         android:textColor="#ffffff"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:layout_below="@+id/widgetButton"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:lines="1"
         android:layout_weight="1"

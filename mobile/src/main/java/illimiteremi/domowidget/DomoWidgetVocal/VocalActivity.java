@@ -3,12 +3,10 @@ package illimiteremi.domowidget.DomoWidgetVocal;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +23,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import illimiteremi.domowidget.DomoGeneralSetting.BoxSetting;
-import illimiteremi.domowidget.DomoGeneralSetting.ManageActivity;
 import illimiteremi.domowidget.DomoUtils.DomoHttp;
 import illimiteremi.domowidget.DomoUtils.DomoUtils;
 import illimiteremi.domowidget.R;
@@ -48,11 +45,23 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
     private TextView            answerTextView;         // Reponse du Toast
     private View                layout;                 // Layout du Toast
 
+    private Intent              VocalIntent;            // Intent du service vocal
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        VocalIntent = new Intent(context, VocalService.class);
+        context.startService(VocalIntent);
+        Log.d(TAG, "onDestroy");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context       = getApplicationContext();
 
+        VocalIntent = new Intent(context, VocalService.class);
+        context.stopService(VocalIntent);
 
         Bundle extras = getIntent().getExtras();
         idWidget      = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -91,15 +100,19 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
                     BoxSetting boxSetting = widget.getSelectedBox();
                     // Execution de l'interaction
                     final String answerMsg = DomoHttp.httpRequest(context, boxSetting, INTERCATION + askMsg, null, widget);
+
                     // Lecture reponse
                     if (widget.getDomoSynthese().equals(1)) {
                         if (ttsIsInit) {
-                            //noinspection deprecation
-                            tts.speak(answerMsg, TextToSpeech.QUEUE_FLUSH, null);
-                            while (tts.isSpeaking()) {
-                                Thread.sleep(500);
-                                // Attente find de message vocale
-                            }
+                            new Thread(new Runnable() {
+                                public void run() {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        tts.speak(answerMsg, TextToSpeech.QUEUE_FLUSH, null, null);
+                                    } else {
+                                        tts.speak(answerMsg, TextToSpeech.QUEUE_FLUSH, null);
+                                    }
+                                }
+                            }).start();
                         }
                     }
                     creatCustomToast(askMsg + "...", answerMsg);
@@ -110,12 +123,11 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
                 Log.e(TAG, "Erreur : " + e);
             }
         }
-        // creatCustomToast("Question", "Réponse");
     }
 
     @Override
     public void onInit(int i) {
-        Log.d(TAG, "onInit");
+        // Log.d(TAG, "onInit");
         if (i == TextToSpeech.SUCCESS) {
             int language = tts.setLanguage(Locale.FRENCH);
             if (language == TextToSpeech.LANG_MISSING_DATA) {
@@ -147,6 +159,7 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
         if (toastTime <= 1000) {
             toastTime = 3000;
         }
+
 
         new CountDownTimer(toastTime, 1000) {
             public void onTick(long millisUntilFinished) {

@@ -18,6 +18,7 @@
     <string name="widget_update">Mise à jour manuelle</string>
     <string name="widget_vocal">Synthèse Vocale</string>
     <string name="widget_vocal_speak">Vous pouvez parler ...</string>
+    <string name="widget_vocal_key_phrase">Mot clef (écoute permanente)</string>
 
     <string name="widget_reg">Expression Régulière - On</string>
     <string name="widget_wait">Attente avant retour d\'état (s)</string>
@@ -39,7 +40,6 @@
 
     <string name="del_title">Confirmation</string>
     <string name="del_message">Voulez vous supprimer l\'objet ?</string>
-
 
     <string name="widget_save_popup">Sauvegarde du widget</string>
     <string name="test_popup">Test de la configuration en cours...</string>
@@ -106,7 +106,7 @@
     <string name="export_loading">Exportation en cours...</string>
     <string name="bdd_update">Chargerment en cous...</string>
 
-    <string name="paypal">Faire un dont</string>
+    <string name="paypal">Faire un don</string>
     <string name="forum">Forum Jeedom</string>
     <string name="tutoriel">Tutoriel</string>
 

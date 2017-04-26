@@ -53,6 +53,7 @@ public class VocalWidgetBDD {
         values.put(UtilsDomoWidget.COL_ID_WIDGET, widget.getDomoId());
         values.put(UtilsDomoWidget.COL_ID_BOX, widget.getDomoBox());
         values.put(UtilsDomoWidget.COL_SYNTHESE_VOCAL, widget.getDomoSynthese());
+        values.put(UtilsDomoWidget.COL_KEYPHRASE, widget.getKeyPhrase());
         // On insère l'objet dans la BDD via le ContentValues
         // Log.d(TAG, "Insertion Widget <" + widget.getDomoName() + "> dans la BDD");
         return bdd.insert(UtilsDomoWidget.TABLE_VOCAL_WIDGET, null, values);
@@ -69,6 +70,7 @@ public class VocalWidgetBDD {
         values.put(UtilsDomoWidget.COL_NAME, widget.getDomoName());
         values.put(UtilsDomoWidget.COL_ID_BOX, widget.getDomoBox());
         values.put(UtilsDomoWidget.COL_SYNTHESE_VOCAL, widget.getDomoSynthese());
+        values.put(UtilsDomoWidget.COL_KEYPHRASE, widget.getKeyPhrase());
         // Log.d(TAG, "Maj Widget <" + widget.getDomoName() + "> dans la BDD");
         return bdd.update(UtilsDomoWidget.TABLE_VOCAL_WIDGET, values, UtilsDomoWidget.COL_ID_WIDGET + " = " + widget.getDomoId(), null);
     }
@@ -96,7 +98,8 @@ public class VocalWidgetBDD {
                                 UtilsDomoWidget.COL_ID_WIDGET,
                                 UtilsDomoWidget.COL_NAME,
                                 UtilsDomoWidget.COL_ID_BOX,
-                                UtilsDomoWidget.COL_SYNTHESE_VOCAL}, UtilsDomoWidget.COL_ID_WIDGET + " LIKE \"" + idWidget +"\"" , null, null, null, null);
+                                UtilsDomoWidget.COL_SYNTHESE_VOCAL,
+                                UtilsDomoWidget.COL_KEYPHRASE}, UtilsDomoWidget.COL_ID_WIDGET + " LIKE \"" + idWidget +"\"" , null, null, null, null);
         // Log.d(TAG, "Récuperation Widget <" + idWidget + "> dans la BDD");
         if (c.getCount() == 0) {
             // Log.d(TAG, "Widget non trouvé !");
@@ -122,7 +125,8 @@ public class VocalWidgetBDD {
                 UtilsDomoWidget.COL_ID_WIDGET,
                 UtilsDomoWidget.COL_NAME,
                 UtilsDomoWidget.COL_ID_BOX,
-                UtilsDomoWidget.COL_SYNTHESE_VOCAL},null , null, null, null, null);
+                UtilsDomoWidget.COL_SYNTHESE_VOCAL,
+                UtilsDomoWidget.COL_KEYPHRASE},null , null, null, null, null);
         // Log.d(TAG, "Récuperation des Widgets");
 
         // Si aucun élément n'a été retourné dans la requête, on renvoie null
@@ -151,6 +155,7 @@ public class VocalWidgetBDD {
         widget.setDomoName(c.getString(c.getColumnIndexOrThrow(UtilsDomoWidget.COL_NAME)));
         widget.setDomoBox(c.getInt(c.getColumnIndexOrThrow(UtilsDomoWidget.COL_ID_BOX)));
         widget.setDomoSynthese(c.getInt(c.getColumnIndexOrThrow(UtilsDomoWidget.COL_SYNTHESE_VOCAL)));
+        widget.setKeyPhrase(c.getString(c.getColumnIndexOrThrow(UtilsDomoWidget.COL_KEYPHRASE)));
         return widget;
     }
 

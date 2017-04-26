@@ -43,8 +43,6 @@
         android:maxLines="2"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:layout_below="@+id/widgetButton"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal|top"
         android:lines="2"
         android:layout_weight="1.4"
