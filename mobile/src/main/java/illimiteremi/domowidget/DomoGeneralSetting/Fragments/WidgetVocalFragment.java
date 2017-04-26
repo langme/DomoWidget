@@ -262,13 +262,13 @@ public class WidgetVocalFragment extends Fragment {
             Toast.makeText(getContext(), getContext().getResources().getString(R.string.save_box), Toast.LENGTH_SHORT).show();
         }
 
+        DomoUtils.startVoiceService(context, true);
         // Mise à jour des widgets
         Intent updateIntent = new Intent(context, WidgetVocalProvider.class);
         updateIntent.setAction(UPDATE_ALL_VOCAL_WIDGET);
         updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget.getDomoId());
         updateIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
         context.sendBroadcast(updateIntent);
-        DomoUtils.startService(context, true);
     }
 }
 

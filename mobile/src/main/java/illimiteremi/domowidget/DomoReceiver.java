@@ -21,6 +21,7 @@ public class DomoReceiver extends BroadcastReceiver {
        Log.d(TAG, action);
 
        DomoUtils.startService(context, true);
+       DomoUtils.startVoiceService(context, true);
 
     }
 }

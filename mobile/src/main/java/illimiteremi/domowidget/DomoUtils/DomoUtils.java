@@ -117,13 +117,19 @@ public class DomoUtils {
             context.stopService(msgIntent);
             context.startService(msgIntent);
         }
+    }
 
-        if (!isServiceRunning(context, VocalService.class)) {
+    /**
+     * restartService Vocal
+     * @param context
+     * @param restart
+     */
+    public static void startVoiceService(Context context, boolean restart){
+        if (!isServiceRunning(context, VocalService.class) || restart) {
             Intent msgIntent = new Intent(context, VocalService.class);
+            context.stopService(msgIntent);
             context.startService(msgIntent);
-            Log.d("[DOMO_VOICE_SERVICE]", "restart service");
         }
-
     }
 
     /**

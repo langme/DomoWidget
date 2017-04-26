@@ -29,8 +29,26 @@ public class VocalService extends Service implements edu.cmu.pocketsphinx.Recogn
     private String              keyPhrase     = "";
     private int                 appWidgetId;
 
-
     private edu.cmu.pocketsphinx.SpeechRecognizer recognizer;
+
+    /**
+     * Configuration du Listener pocketsphinx
+     * @param assetsDir
+     * @throws IOException
+     */
+    private void setupRecognizer(File assetsDir) throws IOException {
+        // Log.d(TAG, "setupRecognizer");
+        recognizer = SpeechRecognizerSetup.defaultSetup()
+                //Set Dictionary and Acoustic Model files
+                .setAcousticModel(new File(assetsDir, "fr-eu-ptm"))
+                .setDictionary(new File(assetsDir, "fr.dict"))
+                .setKeywordThreshold(1e-45f)
+                .getRecognizer();
+        recognizer.addListener(this);
+
+        // Create keyword-activation search.
+        recognizer.addKeyphraseSearch(KWS_SEARCH, keyPhrase);
+    }
 
     @Override
     public void onCreate() {
@@ -41,7 +59,8 @@ public class VocalService extends Service implements edu.cmu.pocketsphinx.Recogn
         for (Object vocalObject : Objects) {
             VocalWidget vocalWidget = ((VocalWidget) vocalObject);
             appWidgetId = vocalWidget.getDomoId();
-            keyPhrase   = vocalWidget.getKeyPhrase();
+            keyPhrase   = vocalWidget.getKeyPhrase().toLowerCase();
+            Log.d(TAG, "Start Vocal Service : Mot Clef = " + keyPhrase);
         }
 
         // Check si KeyPhrase
@@ -76,11 +95,11 @@ public class VocalService extends Service implements edu.cmu.pocketsphinx.Recogn
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // Log.d(TAG,"onDestroy");
         if (recognizer != null) {
             recognizer.cancel();
             recognizer.shutdown();
         }
-        Log.d(TAG,"onDestroy");
     }
 
     @Nullable
@@ -91,12 +110,12 @@ public class VocalService extends Service implements edu.cmu.pocketsphinx.Recogn
 
     @Override
     public void onBeginningOfSpeech() {
-        Log.d(TAG, "onBeginningOfSpeech");
+       // Log.d(TAG, "onBeginningOfSpeech");
     }
 
     @Override
     public void onEndOfSpeech() {
-        Log.d(TAG, "onEndOfSpeech");
+       // Log.d(TAG, "onEndOfSpeech");
     }
 
     @Override
@@ -117,6 +136,9 @@ public class VocalService extends Service implements edu.cmu.pocketsphinx.Recogn
             Log.d(TAG, "onResult : " + text);
 
             // Start interaction
+            recognizer.cancel();
+            recognizer.shutdown();
+
             Intent voiceIntent = new Intent(getApplicationContext(), VocalActivity.class);
             voiceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             voiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -132,24 +154,5 @@ public class VocalService extends Service implements edu.cmu.pocketsphinx.Recogn
     @Override
     public void onTimeout() {
         Log.d(TAG, "onTimeout");
-    }
-
-    /**
-     * Configuration du Listener pocketsphinx
-     * @param assetsDir
-     * @throws IOException
-     */
-    private void setupRecognizer(File assetsDir) throws IOException {
-        Log.d(TAG, "setupRecognizer");
-        recognizer = SpeechRecognizerSetup.defaultSetup()
-            //Set Dictionary and Acoustic Model files
-            .setAcousticModel(new File(assetsDir, "fr-eu-ptm"))
-            .setDictionary(new File(assetsDir, "fr.dict"))
-            .setKeywordThreshold(1e-45f)
-            .getRecognizer();
-        recognizer.addListener(this);
-
-        // Create keyword-activation search.
-        recognizer.addKeyphraseSearch(KWS_SEARCH, keyPhrase);
     }
 }

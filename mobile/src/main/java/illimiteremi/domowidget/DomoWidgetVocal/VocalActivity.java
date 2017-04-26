@@ -45,13 +45,10 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
     private TextView            answerTextView;         // Reponse du Toast
     private View                layout;                 // Layout du Toast
 
-    private Intent              VocalIntent;            // Intent du service vocal
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        VocalIntent = new Intent(context, VocalService.class);
-        context.startService(VocalIntent);
+        DomoUtils.startVoiceService(context, true);
         Log.d(TAG, "onDestroy");
     }
 
@@ -60,7 +57,7 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
         super.onCreate(savedInstanceState);
         context       = getApplicationContext();
 
-        VocalIntent = new Intent(context, VocalService.class);
+        Intent VocalIntent = new Intent(context, VocalService.class);
         context.stopService(VocalIntent);
 
         Bundle extras = getIntent().getExtras();
