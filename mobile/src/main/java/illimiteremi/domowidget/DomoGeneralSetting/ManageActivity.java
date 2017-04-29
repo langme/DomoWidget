@@ -34,6 +34,7 @@ import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetPushFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetStateFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetToogleFragment;
 import illimiteremi.domowidget.DomoGeneralSetting.Fragments.WidgetVocalFragment;
+import illimiteremi.domowidget.DomoUtils.DomoUtils;
 import illimiteremi.domowidget.DomoUtils.FileExplorerActivity;
 import illimiteremi.domowidget.DomoWidgetBdd.DomoBaseSQLite;
 import illimiteremi.domowidget.DomoWidgetBdd.UtilsDomoWidget;
@@ -75,6 +76,10 @@ public class ManageActivity extends AppCompatActivity implements NavigationView.
 
         // Vérification sur la création / update de la BDD
         new CheckDataBase().execute();
+
+        // Démarrage des services si nécessaire.
+        DomoUtils.startVoiceService(context, false);
+        DomoUtils.startService(context, false);
 
     }
 

@@ -120,8 +120,6 @@ public class WidgetVocalProvider extends AppWidgetProvider {
                 Log.e(TAG, "Erreur : La base n'est pas disponilbe !");
             }
         }
-        //DomoUtils.startService(context, false);
-        DomoUtils.startVoiceService(context, false);
     }
 }
 

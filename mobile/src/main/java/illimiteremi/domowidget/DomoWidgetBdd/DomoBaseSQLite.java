@@ -198,6 +198,62 @@ public class DomoBaseSQLite extends SQLiteOpenHelper {
                 Log.e(TAG, "SQLite erreur " + e);
             }
         }
+
+        if (newVersion >=25) {
+            Log.d(TAG, "Mise à jour version 25");
+            try {
+                sqLiteDatabase.execSQL("ALTER TABLE " + UtilsDomoWidget.TABLE_VOCAL_WIDGET
+                        + " ADD COLUMN " + UtilsDomoWidget.COL_THRESHOLD_LEVEL + " INTEGER DEFAULT 0");
+            } catch (SQLiteException e) {
+                Log.e(TAG, "SQLite erreur " + e);
+            }
+        }
+
+        if (newVersion >=26) {
+            Log.d(TAG, "Mise à jour version 26");
+            try {
+                ContentValues values = new ContentValues();
+                // Ajout Ampoules
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_25");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_50");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_75");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_100");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_25");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_50");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_75");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_100");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_25");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_50");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_75");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_100");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_25");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_50");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_75");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+                values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_100");
+                sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+            } catch (SQLiteException e) {
+                Log.e(TAG, "SQLite erreur " + e);
+            }
+        }
+
     }
 
     /**
@@ -340,13 +396,51 @@ public class DomoBaseSQLite extends SQLiteOpenHelper {
         sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
         values.put(UtilsDomoWidget.COL_RESS_NAME, "spot_off");
         sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
-        values.put(UtilsDomoWidget.COL_RESS_NAME, "light_red");
-        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
-        values.put(UtilsDomoWidget.COL_RESS_NAME, "light_50");
-        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
+
+        // Ajout Ampoules
         values.put(UtilsDomoWidget.COL_RESS_NAME, "light_blue");
         sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_25");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_50");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_75");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "bleu_100");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_25");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_50");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_75");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "jaune_100");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "light_red");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_25");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_50");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_75");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "rouge_100");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+
         values.put(UtilsDomoWidget.COL_RESS_NAME, "light_green");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_25");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_50");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_75");
+        sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
+        values.put(UtilsDomoWidget.COL_RESS_NAME, "verte_100");
         sqLiteDatabase.insert(UtilsDomoWidget.TABLE_RESS_WIDGET, null, values);
     }
 }

@@ -125,11 +125,39 @@ public class DomoUtils {
      * @param restart
      */
     public static void startVoiceService(Context context, boolean restart){
-        if (!isServiceRunning(context, VocalService.class) || restart) {
-            Intent msgIntent = new Intent(context, VocalService.class);
+
+        Boolean isKeyPrase = false;
+        Intent msgIntent   = new Intent(context, VocalService.class);
+        ArrayList<Object> Objects = DomoUtils.getAllObjet(context, VOCAL);
+
+        // Check si ecoute permanente de configurer
+        try {
+            for (Object vocalObject : Objects) {
+                VocalWidget vocalWidget = ((VocalWidget) vocalObject);
+
+                if (vocalWidget.getThresholdLevel()!= 0) {
+                    Log.d(TAG, "Ecoute permanente : " + isKeyPrase);
+                    if (!isServiceRunning(context, VocalService.class) || restart) {
+                        context.stopService(msgIntent);
+                        context.startService(msgIntent);
+                    }
+                } else {
+                    context.stopService(msgIntent);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Erreur : " + e);
             context.stopService(msgIntent);
-            context.startService(msgIntent);
         }
+    }
+
+    /**
+     * stopVoiceService
+     * @param context
+     */
+    public static void stopVoiceService(Context context){
+        Intent msgIntent   = new Intent(context, VocalService.class);
+        context.stopService(msgIntent);
     }
 
     /**
@@ -144,11 +172,11 @@ public class DomoUtils {
         // Loop through the running services
         for(ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                // Log.d(TAG, "Service is running...");
+                Log.d(TAG, "Service " + serviceClass.getName() + " is running...");
                 return true;
             }
         }
-        // Log.d(TAG, "Service is not started !");
+        Log.d(TAG, "Service " + serviceClass.getName() + " is not running !");
         return false;
     }
 

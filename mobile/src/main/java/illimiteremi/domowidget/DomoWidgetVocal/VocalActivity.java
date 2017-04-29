@@ -3,6 +3,7 @@ package illimiteremi.domowidget.DomoWidgetVocal;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.speech.RecognizerIntent;
@@ -46,19 +47,23 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
     private View                layout;                 // Layout du Toast
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        DomoUtils.startVoiceService(context, true);
-        Log.d(TAG, "onDestroy");
+    public void finish() {
+        // Log.d(TAG, "finish");
+        DomoUtils.startVoiceService(context, false);
+        if(android.os.Build.VERSION.SDK_INT >= 21) {
+            super.finishAndRemoveTask();
+        } else {
+            super.finish();
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context       = getApplicationContext();
+        context = getApplicationContext();
 
-        Intent VocalIntent = new Intent(context, VocalService.class);
-        context.stopService(VocalIntent);
+        // Stop voice service
+        DomoUtils.stopVoiceService(context);
 
         Bundle extras = getIntent().getExtras();
         idWidget      = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -74,6 +79,7 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, context.getResources().getString(R.string.widget_vocal_speak));
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 2000);
         startActivityForResult(intent, VOICE_REQUEST_CODE);
 
     }
@@ -162,6 +168,7 @@ public class VocalActivity extends AppCompatActivity implements TextToSpeech.OnI
             public void onTick(long millisUntilFinished) {
                 toast.show();
             }
+
             public void onFinish() {
                 toast.show();
             }

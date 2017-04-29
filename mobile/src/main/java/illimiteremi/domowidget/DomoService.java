@@ -26,6 +26,7 @@ import illimiteremi.domowidget.DomoUtils.DomoHttp;
 import illimiteremi.domowidget.DomoUtils.DomoUtils;
 import illimiteremi.domowidget.DomoWidgetLocation.LocationWidget;
 import illimiteremi.domowidget.DomoWidgetLocation.WidgetLocationProvider;
+import illimiteremi.domowidget.DomoWidgetVocal.VocalService;
 
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.LOCATION;
 import static illimiteremi.domowidget.DomoUtils.DomoConstants.LOCATION_WIDGET_CHANGED;
@@ -169,6 +170,11 @@ public class DomoService extends Service {
                 if (action.contentEquals("android.intent.action.SCREEN_ON") || action.contentEquals("android.net.conn.CONNECTIVITY_CHANGE")) {
                     DomoUtils.updateAllWidget(context);
                     DomoHttp.checkWifi(context);
+                    DomoUtils.startVoiceService(context, false);
+                }
+
+                if (action.contentEquals("android.intent.action.SCREEN_OFF")) {
+                    DomoUtils.stopVoiceService(context);
                 }
 
             }
@@ -178,6 +184,7 @@ public class DomoService extends Service {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         // Log.d(TAG, "Création BroadcastReceiver...");
 
         registerReceiver(mReceiver, intentFilter);

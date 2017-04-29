@@ -25,13 +25,15 @@ public class VocalWidget {
     private BoxSetting selectedBox;                                 // Box selectionnée
     private Boolean    isPresent;                                   // Widget présent sur le home
     private String     keyPhrase;                                   // Mot clef
+    private Integer    thresholdLevel;                              // Seuil de détection
 
     public VocalWidget(Context context, Integer domoId) {
         // Log.d(TAG, "Instance de l'objet Widget : " + domoId);
-        this.context      = context;
-        this.domoId       = domoId;
-        this.domoSynthese = 1;
-        this.isPresent    = DomoUtils.widgetIsPresent(context, domoId);
+        this.context        = context;
+        this.domoId         = domoId;
+        this.domoSynthese   = 1;
+        this.thresholdLevel = 0;
+        this.isPresent      = DomoUtils.widgetIsPresent(context, domoId);
     }
 
     public Integer getDomoSynthese() {
@@ -94,5 +96,13 @@ public class VocalWidget {
             return selectedBox;
         }
         return null;
+    }
+
+    public Integer getThresholdLevel() {
+        return thresholdLevel;
+    }
+
+    public void setThresholdLevel(Integer thresholdLevel) {
+        this.thresholdLevel = thresholdLevel;
     }
 }

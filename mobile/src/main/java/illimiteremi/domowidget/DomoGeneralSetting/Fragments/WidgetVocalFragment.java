@@ -17,7 +17,9 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import illimiteremi.domowidget.DomoAdapter.BoxAdapter;
@@ -53,6 +55,8 @@ public class WidgetVocalFragment extends Fragment {
     private LinearLayout          linearLayoutWidget;       // Layout de la configuration du widget
     private CheckBox              checkSyntheseVocal;       // Synthese Vocal
     private AutoCompleteTextView  keyPhrase;                // Mot clef comme Ok Google
+    private SeekBar               thresholdLevel;           // Seuil de détection
+    private TextView              textThresholdLevel;       // Niveau du seuil
 
     private BoxSetting            selectedBox;              // Box domotique utilisé par le widget
     private WidgetAdapter         widgetAdapter;            // Adapter de la liste des widgets
@@ -158,6 +162,8 @@ public class WidgetVocalFragment extends Fragment {
         linearLayoutWidget = (LinearLayout) view.findViewById(R.id.linearWidget);
         checkSyntheseVocal = (CheckBox) view.findViewById(R.id.checkSyntheseVocal);
         keyPhrase          = (AutoCompleteTextView) view.findViewById(R.id.editKeyPhrase);
+        thresholdLevel     = (SeekBar) view.findViewById(R.id.thresholdLevelSeekBar);
+        textThresholdLevel = (TextView) view.findViewById(R.id.textThresholdLevel);
 
         // Chargement des spinners
         loadSpinner();
@@ -172,6 +178,7 @@ public class WidgetVocalFragment extends Fragment {
                     try {
                         selectedBox = widget.getSelectedBox();
                         name.setText(widget.getDomoName());
+                        thresholdLevel.setProgress(widget.getThresholdLevel());
                         checkSyntheseVocal.setChecked(widget.getDomoSynthese().equals(1));
                         // Selection du spinner box associé au widget
                         if (selectedBox != null) {
@@ -211,6 +218,27 @@ public class WidgetVocalFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        thresholdLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int threshold, boolean b) {
+                widget.setThresholdLevel(threshold);
+                String thresholdTxt = context.getResources().getString(R.string.threshold_level) ;
+                thresholdTxt = threshold == 0 ? thresholdTxt + " : " + context.getResources().getString(R.string.wear_disable) : thresholdTxt + " : " + threshold + " / 50";
+                textThresholdLevel.setText(thresholdTxt);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
@@ -261,8 +289,9 @@ public class WidgetVocalFragment extends Fragment {
             // Message de sauvegarde
             Toast.makeText(getContext(), getContext().getResources().getString(R.string.save_box), Toast.LENGTH_SHORT).show();
         }
-
+        // Re-démarrage du service vocal
         DomoUtils.startVoiceService(context, true);
+
         // Mise à jour des widgets
         Intent updateIntent = new Intent(context, WidgetVocalProvider.class);
         updateIntent.setAction(UPDATE_ALL_VOCAL_WIDGET);
