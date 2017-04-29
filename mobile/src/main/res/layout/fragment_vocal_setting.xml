@@ -133,8 +133,28 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentEnd="true"
                     android:background="#ffffff"
-                    android:hint="DomoWidget"
+                    android:hint="Ok DomoWidget"
                     android:paddingLeft="5dp" />
+
+                <TextView
+                    android:id="@+id/textThresholdLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/editKeyPhrase"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/threshold_level"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <SeekBar
+                    android:id="@+id/thresholdLevelSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:max="50"
+                    android:progress="1"/>
 
             </LinearLayout>
 

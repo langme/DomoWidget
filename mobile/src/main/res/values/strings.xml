@@ -17,7 +17,7 @@
     <string name="widget_color">Couleur de fond</string>
     <string name="widget_update">Mise à jour manuelle</string>
     <string name="widget_vocal">Synthèse Vocale</string>
-    <string name="widget_vocal_speak">Vous pouvez parler ...</string>
+    <string name="widget_vocal_speak">Vous pouvez parler...</string>
     <string name="widget_vocal_key_phrase">Mot clef (écoute permanente)</string>
 
     <string name="widget_reg">Expression Régulière - On</string>
@@ -86,7 +86,7 @@
     <string name="wear_title">Montre connectée</string>
     <string name="wear_node">Aucune</string>
     <string name="wear_disable">DÉSACTIVE</string>
-
+    <string name="threshold_level">Seuil de détection</string>
 
     <string name="error_name">Le nom est obligatoire !</string>
     <string name="error_url_ext">Une adresse est obligatoire !</string>
